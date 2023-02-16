@@ -7,6 +7,8 @@ import { useState } from "react";
 
 function App() {
   const [people, setPeople] = useState([]);
+  const [modositandoId, setModositandoId] = useState(0);
+
   const emberekListazasa = () => {
     fetch("http://localhost:8000/api/people", {
       headers: {
@@ -29,8 +31,8 @@ function App() {
     <>
       <Nav navItems={[{ href: "#felvetel", displayText: "Ember felvétele" }]} />
       <main className="container">
-        <PeopleList onMount={emberekListazasa} people={people} />
-        <PeopleForm onSuccess={emberekListazasa} />
+        <PeopleList onMount={emberekListazasa} people={people} modositClick={(id) => setModositandoId(id)}/>
+        <PeopleForm onSuccess={emberekListazasa} modositandoId={modositandoId} resetModositando={() => setModositandoId(0)} />
       </main>
     </>
   );

@@ -1,6 +1,20 @@
 function PersonCard(props) {
-  const { person } = props;
-  const { name, email, address, phone_number, birth_date } = person;
+  const { person, afterDelete, modositClick } = props;
+  const { id, name, email, address, phone_number, birth_date } = person;
+  const emberTorlese = () => {
+    fetch(`http://localhost:8000/api/people/${id}`, {
+      method: "DELETE",
+      headers: {
+        Accept: "application/json",
+      },
+    }).then(async (response) => {
+      if (response.status !== 204) {
+        const data = await response.json();
+        alert(data.message);
+      }
+      afterDelete();
+    });
+  };
   // TODO: módosítás és törlés megvalósítása
   return (
     <div className="col-md-6">
@@ -32,8 +46,8 @@ function PersonCard(props) {
         </div>
         <div className="card-footer">
             <div className="row row-cols-2">
-                <button className="btn btn-warning col">Módosítás</button>
-                <button className="btn btn-danger col">Törlés</button>
+                <a href="#felvetel" className="btn btn-warning col" onClick={() => {modositClick(id)}}>Módosítás</a>
+                <button className="btn btn-danger col" onClick={() => {emberTorlese();}}>Törlés</button>
             </div>
         </div>
       </div>

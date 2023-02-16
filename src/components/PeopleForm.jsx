@@ -1,14 +1,37 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import FormInput from "./FormInput";
 
 function PeopleForm(props) {
-  const { onSuccess } = props;
+  const { onSuccess, modositandoId = 0, resetModositando } = props;
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [address, setAddress] = useState("");
   const [phone_number, setPhone_number] = useState("");
   const [birth_date, setBirth_date] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+
+  useEffect(() => {
+    if (modositandoId === 0) {
+      formReset();
+    } else {
+      fetch(`http://localhost:8000/api/people/${modositandoId}`, {
+        headers: {
+          Accept: "application/json",
+        },
+      }).then(async (response) => {
+        const data = await response.json();
+        if (response.status !== 200) {
+          alert(data.message);
+        } else {
+          setName(data.name);
+          setEmail(data.email);
+          setAddress(data.address);
+          setPhone_number(data.phone_number);
+          setBirth_date(data.birth_date);
+        }
+      });
+    }
+  }, [modositandoId]);
 
   const emberFelvetele = () => {
     const person = {
@@ -28,12 +51,7 @@ function PeopleForm(props) {
     }).then(async (response) => {
       if (response.status === 201) {
         onSuccess();
-        setName("");
-        setEmail("");
-        setAddress("");
-        setPhone_number("");
-        setBirth_date("");
-        setErrorMessage("");
+        formReset();
       } else if (response.status === "404") {
         setErrorMessage("Az oldal nem található");
       } else {
@@ -44,9 +62,51 @@ function PeopleForm(props) {
     });
   };
 
+  const emberModositasa = () => {
+    const person = {
+      name: name,
+      email: email,
+      address: address,
+      phone_number: phone_number,
+      birth_date: birth_date,
+    };
+    fetch(`http://localhost:8000/api/people/${modositandoId}`, {
+      method: "PUT",
+      body: JSON.stringify(person),
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+    }).then(async (response) => {
+      if (response.status === 200) {
+        onSuccess();
+        resetModositando();
+      } else if (response.status === "404") {
+        setErrorMessage("Az oldal nem található");
+      } else {
+        const jsonData = await response.json();
+        const errorMessage = jsonData.message;
+        setErrorMessage(errorMessage);
+      }
+    });
+  };
+
+  const formReset = () => {
+    setName("");
+    setEmail("");
+    setAddress("");
+    setPhone_number("");
+    setBirth_date("");
+    setErrorMessage("");
+  };
+
   return (
-    <section id="felvetel">
-      <h2>Új ember felvétele</h2>
+    <section id="felvetel" className="mt-3">
+      {modositandoId === 0 ? (
+        <h2>Új ember felvétele</h2>
+      ) : (
+        <h2>{name} módosítása</h2>
+      )}
       {errorMessage !== "" ? (
         <div
           className="alert alert-danger alert-dismissible fade show"
@@ -66,7 +126,11 @@ function PeopleForm(props) {
       <form
         onSubmit={(event) => {
           event.preventDefault();
-          emberFelvetele();
+          if (modositandoId === 0) {
+            emberFelvetele();
+          } else {
+            emberModositasa();
+          }
         }}
       >
         <FormInput
@@ -102,8 +166,24 @@ function PeopleForm(props) {
           value={birth_date}
           setValue={setBirth_date}
         />
-        <button className="btn btn-success" type="submit">
-          Elküld
+        {modositandoId === 0 ? (
+          <button className="btn btn-success" type="submit">
+            Felvétel
+          </button>
+        ) : (
+          <button className="btn btn-warning" type="submit">
+            Módosítás
+          </button>
+        )}
+        <button
+          className="btn btn-danger"
+          type="reset"
+          onClick={() => {
+            formReset();
+            resetModositando();
+          }}
+        >
+          Űrlap alaphelyzetbe
         </button>
       </form>
     </section>
