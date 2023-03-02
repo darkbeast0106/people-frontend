@@ -10,7 +10,7 @@ function App() {
   const [modositandoId, setModositandoId] = useState(0);
 
   const emberekListazasa = () => {
-    fetch("http://localhost:8000/api/people", {
+    fetch(`${process.env.REACT_APP_API_LINK}`, {
       headers: {
         Accept: "application/json",
       },
@@ -26,10 +26,14 @@ function App() {
       }
     });
   };
+  const navList = [
+    { href: "#felvetel", displayText: "Ember felvétele" },
+    { href: "https://github.com/darkbeast0106/people-frontend", displayText: "GitHub" }
+  ]
 
   return (
     <>
-      <Nav navItems={[{ href: "#felvetel", displayText: "Ember felvétele" }]} />
+      <Nav navItems={navList} />
       <main className="container">
         <PeopleList onMount={emberekListazasa} people={people} modositClick={(id) => setModositandoId(id)}/>
         <PeopleForm onSuccess={emberekListazasa} modositandoId={modositandoId} resetModositando={() => setModositandoId(0)} />

@@ -14,7 +14,7 @@ function PeopleForm(props) {
     if (modositandoId === 0) {
       formReset();
     } else {
-      fetch(`http://localhost:8000/api/people/${modositandoId}`, {
+      fetch(`${process.env.REACT_APP_API_LINK}/${modositandoId}`, {
         headers: {
           Accept: "application/json",
         },
@@ -41,7 +41,7 @@ function PeopleForm(props) {
       phone_number: phone_number,
       birth_date: birth_date,
     };
-    fetch("http://localhost:8000/api/people", {
+    fetch(`${process.env.REACT_APP_API_LINK}`, {
       method: "POST",
       body: JSON.stringify(person),
       headers: {
@@ -70,7 +70,7 @@ function PeopleForm(props) {
       phone_number: phone_number,
       birth_date: birth_date,
     };
-    fetch(`http://localhost:8000/api/people/${modositandoId}`, {
+    fetch(`${process.env.REACT_APP_API_LINK}/${modositandoId}`, {
       method: "PUT",
       body: JSON.stringify(person),
       headers: {

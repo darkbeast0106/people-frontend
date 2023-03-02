@@ -2,7 +2,7 @@ function PersonCard(props) {
   const { person, afterDelete, modositClick } = props;
   const { id, name, email, address, phone_number, birth_date } = person;
   const emberTorlese = () => {
-    fetch(`http://localhost:8000/api/people/${id}`, {
+    fetch(`${process.env.REACT_APP_API_LINK}/${id}`, {
       method: "DELETE",
       headers: {
         Accept: "application/json",
