@@ -9,6 +9,7 @@ function Nav(props) {
         key={item.href}
         href={item.href}
         displayText={item.displayText}
+        attributes={item.attributes}
       />
     );
   });

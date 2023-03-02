@@ -4,6 +4,9 @@ import PeopleForm from "./components/PeopleForm";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle";
 import { useState } from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Layout from "./components/Layout";
+import NoPage from "./components/NoPage";
 
 function App() {
   const [people, setPeople] = useState([]);
@@ -26,11 +29,19 @@ function App() {
       }
     });
   };
-  const navList = [
-    { href: "#felvetel", displayText: "Ember felvétele" },
-    { href: "https://github.com/darkbeast0106/people-frontend", displayText: "GitHub" }
-  ]
 
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route index element={<PeopleList onMount={emberekListazasa} people={people} modositClick={(id) => setModositandoId(id)}/>} />
+          <Route path="create" element={<PeopleForm onSuccess={emberekListazasa} modositandoId={modositandoId} resetModositando={() => setModositandoId(0)} />} />
+          <Route path="*" element={<NoPage />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
+  );
+  /*
   return (
     <>
       <Nav navItems={navList} />
@@ -40,6 +51,7 @@ function App() {
       </main>
     </>
   );
+  */
 }
 
 export default App;

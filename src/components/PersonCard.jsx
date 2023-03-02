@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 function PersonCard(props) {
   const { person, afterDelete, modositClick } = props;
   const { id, name, email, address, phone_number, birth_date } = person;
@@ -46,7 +48,7 @@ function PersonCard(props) {
         </div>
         <div className="card-footer">
             <div className="row row-cols-2">
-                <a href="#felvetel" className="btn btn-warning col" onClick={() => {modositClick(id)}}>Módosítás</a>
+                <Link to="create" className="btn btn-warning col" onClick={() => {modositClick(id)}}>Módosítás</Link>
                 <button className="btn btn-danger col" onClick={() => {emberTorlese();}}>Törlés</button>
             </div>
         </div>
