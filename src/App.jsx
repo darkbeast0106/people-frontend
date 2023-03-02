@@ -1,16 +1,18 @@
-import Nav from "./components/Nav";
 import PeopleList from "./components/PeopleList";
 import PeopleForm from "./components/PeopleForm";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle";
 import { useState } from "react";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import Layout from "./components/Layout";
+import NoPage from "./components/NoPage";
 
 function App() {
   const [people, setPeople] = useState([]);
   const [modositandoId, setModositandoId] = useState(0);
 
   const emberekListazasa = () => {
-    fetch("http://localhost:8000/api/people", {
+    fetch(`${process.env.REACT_APP_API_LINK}`, {
       headers: {
         Accept: "application/json",
       },
@@ -28,13 +30,33 @@ function App() {
   };
 
   return (
-    <>
-      <Nav navItems={[{ href: "#felvetel", displayText: "Ember felvétele" }]} />
-      <main className="container">
-        <PeopleList onMount={emberekListazasa} people={people} modositClick={(id) => setModositandoId(id)}/>
-        <PeopleForm onSuccess={emberekListazasa} modositandoId={modositandoId} resetModositando={() => setModositandoId(0)} />
-      </main>
-    </>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route
+            index
+            element={
+              <PeopleList
+                onMount={emberekListazasa}
+                people={people}
+                modositClick={(id) => setModositandoId(id)}
+              />
+            }
+          />
+          <Route
+            path="create"
+            element={
+              <PeopleForm
+                onSuccess={emberekListazasa}
+                modositandoId={modositandoId}
+                resetModositando={() => setModositandoId(0)}
+              />
+            }
+          />
+          <Route path="*" element={<NoPage />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
   );
 }
 

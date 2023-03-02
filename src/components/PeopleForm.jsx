@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import FormInput from "./FormInput";
+import { useNavigate } from "react-router-dom";
 
 function PeopleForm(props) {
   const { onSuccess, modositandoId = 0, resetModositando } = props;
@@ -9,12 +10,13 @@ function PeopleForm(props) {
   const [phone_number, setPhone_number] = useState("");
   const [birth_date, setBirth_date] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (modositandoId === 0) {
       formReset();
     } else {
-      fetch(`http://localhost:8000/api/people/${modositandoId}`, {
+      fetch(`${process.env.REACT_APP_API_LINK}/${modositandoId}`, {
         headers: {
           Accept: "application/json",
         },
@@ -41,7 +43,7 @@ function PeopleForm(props) {
       phone_number: phone_number,
       birth_date: birth_date,
     };
-    fetch("http://localhost:8000/api/people", {
+    fetch(`${process.env.REACT_APP_API_LINK}`, {
       method: "POST",
       body: JSON.stringify(person),
       headers: {
@@ -70,7 +72,7 @@ function PeopleForm(props) {
       phone_number: phone_number,
       birth_date: birth_date,
     };
-    fetch(`http://localhost:8000/api/people/${modositandoId}`, {
+    fetch(`${process.env.REACT_APP_API_LINK}/${modositandoId}`, {
       method: "PUT",
       body: JSON.stringify(person),
       headers: {
@@ -81,6 +83,7 @@ function PeopleForm(props) {
       if (response.status === 200) {
         onSuccess();
         resetModositando();
+        navigate("/");
       } else if (response.status === "404") {
         setErrorMessage("Az oldal nem található");
       } else {
